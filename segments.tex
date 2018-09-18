@@ -1,0 +1,105 @@
+\subsection{Segments}
+
+During MPUS, there are always two active classes. A ``segment"
+succinctly represents the blocks that are available for pick up
+while a certain pair of classes are active.
+These segments can be translated into nodes of a graph, that can be used for finding the optimal solution, as described below. Note that our representation of segments is a slightly condensed version of the one described in the original
+"Applegate et al."'s paper \cite{ACJKLW07}. The difference is that
+the original definition is a five tuple with two redundant fields.
+See Subsection \ref{ss_seg} of the appendix for a proof that these fields are
+redundant. It is not here where the running time is improved.
+
+\subsubsection{Definition and Properties.}
+
+Whenever a new class becomes active during the execution of the MPUS algorithm
+ on a pattern $P$, we will define a {\em segment} $S$ as being a tuple of
+three elements $(E_{x},E_{y},U)$ where $E_{x}$ and $E_{y}$ are the active
+equivalence classes and $U$ is the subset of members (rows or columns)
+ left unpicked of $E_{y}$ ($U \subset E_{y}$).
+
+We can represent the sequence of actions of the MPUS execution as
+a sequence of segments, as described in this paragraph.
+ Given the pick-up order obtained through the execution of the MPUS,
+let's create a segment $(E_{0}, E_{N}, E_{N})$ for the starting state of pattern $P$ and a segment $(E_{x}, E_{y}, U)$, $U \subset E_{y}$, for every time a new class $E_{x}$ becomes active; we say that the SRRL {\em includes} the
+segment whenever such a segment becomes active during the MPUS execution
+corresponding to the SRRL.
+
+Since $E_{x}$ is the new class, all of the members of $E_{x}$ are still in the pattern. $E_{y}$, in the other hand, is a class that was already active. It may have some of its members already picked-up. We store that information in $U$ by maintaining the members that have not been picked up yet. Note also that any classes that are between $E_{x}$ and $E_{y}$ in the hierarchical array of $P$ have not become active yet, resulting in the fact that all of
+their members are still there. At the same time, members that come before and after the interval delimited by $E_{x}$ and $E_{y}$ have all been picked up. Hence, for each one of those segments that are created whenever a class becomes active it is possible to reconstruct the pattern at that moment of the execution of the MPUS algorithm.
+
+\subsubsection{Segment Branching.}
+
+"Applegate et al."'s paper \cite{ACJKLW07}
+shows that if we are looking for an optimal solution we can narrow down the number of segments significantly by reducing the number of options a segment can branch to two.
+
+Suppose a minimum-length SRRL for a strip-rule pattern $P$ includes the segment $S = (E_{x}, E_{y}, U)$ and that to get to the next segment, if it exists, we pick up all members of $E_{x}$
+(possibly picking up some members of $U \subset E_{y}$)
+while at least one member of $U$ remains active.
+
+\begin{itemize}
+
+\item If $U \subset E_{y}$ has a member that is not embedded in $E_{x}$,
+ there exists a minimum-length SRRL that includes the segment
+$S = (E_{x}, E_{y}, U)$ and that to get to the next segment you pick up
+ all the members of $U \subset E_{y}$ that are embedded in $E_{x}$,
+ followed by picking all members of $E_{x}$.
+
+\item If all members of $U \subset E_{y}$ are embedded in $E_{x}$,
+ there exists another minimum-length SRRL that includes the segment
+$S = (E_{x}, E_{y}, U)$ and that to get to the next segment you
+ pick up all the members of $U \subset E_{y}$
+(thus, finishing picking up every member of $E_{y}$ in the pattern).
+Note that in this case, one can get to the next segment by picking up all
+the members of $U \subseteq E_y$ first.
+
+\end{itemize}
+
+The same property holds with the roles of $E_{x}$ and $U$ switched. In this case, we assume the next segment from $S$, if it exists is originally reached by picking up all members of $U \subset E_{y}$.
+
+This happens because we can always pick embedded members at no extra cost,
+if one is to pick all the blocks of the embedding class, as shown in
+Proposition \ref{p_embed} of the Appendix.
+Moreover, suppose we have two sets $U_x$ and $U_y$
+of active blocks of the two active classes $E_x$ and $E_y$.
+To finish picking up blocks (except at the very end), we must
+reach the situation that either $E_x$ or $E_y$ are not active anymore;
+say $E_x$ becomes not active, while $E_y$ is still active.
+%together with a new active class $E_z$.
+Picking up any block from the class $E_y$ that is not embedded in $E_x$
+can be done, without loss of optimality, later.
+So we can assume that
+ only the members of $U_y$ that are embedded in $E_x$ are picked up
+while $E_x$ is active.
+
+ Note also that for every segment we could pick the latest class that became active or the oldest, a total of two options. We can then say that every segment will branch into two other segments. On both cases, we can determine the next segment reached by eliminating every embedded member of the class not being picked-up, followed by eliminating every member of the class being picked-up. The only exception to this, is if when we pick every embedded member of the class not being picked-up we end up picking all of its members, thus already reaching a new segment. In that case, the original segment branches into only one segment, instead of two.
+
+Note that there could be a segment that does not have any next segment. In this case, the segment is a segment at the very end of minimum-length SRRL. If we pick up any of either class, we will obtain an all-gray grid and the algorithm will be over. Also, note that for this to happen we must have that $E_{x}$ and $E_{y}$ are next to each other in the hierarchy array, and picking-up one of them will also result in picking-up the other one.
+
+\subsubsection{Segment Graph.}
+
+We build a graph using the segments as nodes, as described by the following structure proposed by \cite{ACJKLW07}:
+
+\begin{itemize}
+
+\item Start with the segment $(E_{0}, E_{N}, E_{N})$, that represents the grid as it is in very beginning of the MPUS algorithm. This will be the starting node.
+
+\item For every node (segment) in the graph, generate the two segments (possibly one, as described in the previous subsection) that it branches into and add a directed edge from it to the new generated nodes.
+ There will be one segment for each of the two options of picking up the newest or the oldest of the two classes in the segment. On both cases, we can determine the next segment reached by eliminating every embedded member of the class not being picked-up, followed by eliminating every member of the class being picked-up.
+
+\item Define the cost for each edge as the number of rules in the MPUS algorithm used to go from one segment to another.
+
+\item Create an artificial node corresponds to an all-gray grid. This will be the end node of the graph. Every time a segment has its two classes adjacent to each other in the hierarchy array, create an edge from it to this all-gray grid node.
+ This edge should have cost one (since we solve the modified version);
+if we were to solve the original version, this edge should have cost zero
+if the members of the classes of the segment were white and one otherwise.
+
+\end{itemize}
+
+Because of what was discussed in the Segments Branching section, at least one of the paths from the starting node to the end node of the graph will be a minimum-length SRRL.
+ Note that having $(E_{N}, E_{0}, E_{0})$ as the starting node will lead to a graph that represents the same possible steps for the MPUS because it also represents the same starting pattern. Note also that some nodes may be reached by more than one node. Every node will only branch into nodes that correspond to patterns with fewer total of columns and rows. This implies that there are no cycles in this graph.
+
+We say that one segment reaches another if there is a path in this graph from that segment to the other one. The distance from one segment to another is the sum of the costs of the edges that compose the path between them, if such exists.
+
+One very important property of this graph that will be proven later is that if two segments $(E_{x}, E_{y}, U)$ and $(E_{x}, E_{y}, U')$ are reachable from the the starting node of the graph, then either $U \subset U'$ or $U' \subset U$. This property will be referred as the Containment Lemma and appears
+in Subsection \ref{ss_cont} in the Appendix. We will see that this implies that the number of nodes in this graph is $O(n^{2})$ where $n$ is the number of rows and columns in the original pattern.
+

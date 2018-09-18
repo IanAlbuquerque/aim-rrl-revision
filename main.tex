@@ -1,0 +1,82 @@
+\documentclass{llncs}
+
+
+\usepackage{hyperref}
+%\usepackage{mathtools}
+\usepackage{enumerate}
+%\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\newcommand{\lemmaautorefname}{Lemma}
+\newcommand{\corollaryautorefname}{Corollary}
+
+
+\usepackage{blindtext}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\bibliographystyle{plain}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+
+\addbibresource{main.bib}
+
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{anysize}
+\usepackage{times}
+\usepackage{mathptm}
+\renewcommand{\baselinestretch}{1}
+
+\usepackage[utf8]{inputenc}
+
+\title{Faster Compression of Patterns to \\Rectangle Rule Lists}
+\author{Ian Albuquerque Raymundo Da Silva\inst{1} \and  Gruia Calinescu\inst{2}\and Nathan De Graaf\inst{3} }
+\institute{
+Pontifical Catholic University of Rio de Janeiro, Brazil\\
+\email{ian.albuquerque.silva@gmail.com}
+\and
+Illinois Institute of Technology, Chicago, Illinois\\\email{calinescu@iit.edu}
+\and Iowa State University, Ames, Iowa \\\email{nathandegraaf@gmail.com} }
+\date{February 2017}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Access Control Lists (ACLs) are an essential security component
+in network routers. ACLs can be geometrically modeled as a two
+dimensional black and white grid; our interest is in the most
+efficient way to represent such a grid. The more general problem
+is that of Rectangle Rule Lists (RRLs), which is finding the
+least number of rectangles needed to generate a given pattern.
+The scope of this paper focuses on a restricted version of RRLs
+in which only rectangles that span the length or width of the
+grid are considered. "Applegate et al."'s paper Compressing
+Rectilinear Pictures and Minimizing Access Control Lists
+gives an algorithm for finding the optimal solutions for
+strip-rule RRLs in $O(n^3)$ time. Following the structure
+of "Applegate et al."'s algorith, we simplify the solution,
+remove redundancies in data structures, and exploit overlapping
+sub-problems in order to achieve an optimal solution for
+strip-rule RRLs in $O(n^2 $ log $n)$ time.
+\end{abstract}
+
+\input{intro.tex}
+\input{preliminary.tex}
+\input{algorithm.tex}
+\input{running_time.tex}
+\input{conclusions.tex}
+
+\printbibliography
+\pagebreak
+
+\input{what_makes_possible.tex}
+
+\end{document}

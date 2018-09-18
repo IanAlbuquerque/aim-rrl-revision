@@ -1,0 +1,81 @@
+\subsection{Segments Properties}
+\label{ss_seg}
+
+This section contains the proofs of the properties discussed earlier regarding segments.
+
+\subsubsection{Segment Redefinition}
+
+Earlier, we mentioned that the definition given by "Applegate et al."'s paper
+\cite{ACJKLW07} is redundant. They define a segment as being a tuple of five elements $(E_{x},c_{x},E_{y},c_{y},U)$, where $E_{x}$ and $E_{y}$ are the active equivalence classes, $c_{x}$ and $c_{y}$ are the colors of the members $E_{x}$ and $E_{y}$ (that are pseudo-monochromatic), and $U$ is the subset of members left unpicked of $E_{y}$ ($U \subset E_{y}$). The next statement shows that the colors are redundant, allowing us to reduce the definition of a segment to $(E_{x},E_{y},,U)$.
+
+\begin{proposition}
+\label{corollary_known_colors}
+Let $E_{1}$, $E_{2}$, $\cdots$, $E_{N}$ be the hierarchical array of a pattern. Given $a$ and $b$ such that $1 \leq a < b \leq N$ it is possible to know what colors correspond to each active class of a label ($E_{a}$,$E_{b}$).
+\end{proposition}
+
+\begin{proof}
+Given $a$ and $b$ such that $1 \leq a < b \leq N$.
+
+\begin{itemize}
+\item If $E_{1} \in C$ and $E_{N} \in C$, we have that: If $E_{a} \in C$, $E_{a}$ is white. If $E_{a} \in R$, $E_{a}$ is black. If $E_{b} \in C$, $E_{b}$ is black. If $E_{b} \in R$, $E_{a}$ is white.
+
+\item If $E_{1} \in R$ and $E_{N} \in R$, we have that: If $E_{a} \in C$, $E_{a}$ is black. If $E_{a} \in R$, $E_{a}$ is white. If $E_{b} \in C$, $E_{b}$ is white. If $E_{b} \in R$, $E_{a}$ is black.
+
+\item If $E_{1}$ and $E_{N}$ are from different types and $E_{1}$ and $E_{N}$ are initially black, we have that: If $E_{a} \in C$, $E_{a}$ is black. If $E_{a} \in R$, $E_{a}$ is white. If $E_{b} \in C$, $E_{b}$ is white. If $E_{b} \in R$, $E_{a}$ is black.
+
+\item If $E_{1}$ and $E_{N}$ are from different types and $E_{1}$ and $E_{N}$ are initially white, we have that: If $E_{a} \in C$, $E_{a}$ is white. If $E_{a} \in R$, $E_{a}$ is black. If $E_{b} \in C$, $E_{b}$ is black. If $E_{b} \in R$, $E_{a}$ is white.
+\end{itemize}
+
+This happens because when we pick from either sides, the color alternates for each item picked up as well as its type. Hence, the color of $E_{a}$ will always match the color of $E_{1}$ if they have the same type and differ if they are from different types.
+The same will happen with $E_{b}$ and $E_{N}$.
+\qed
+\end{proof}
+
+It is a consequence of this corollary the fact that having a segment $S=(E_{k_{1}},c_{k_{1}},E_{k_{2}},c_{k_{2}},U)$, $U \subset E_{k_{2}}$, is redundant. We may start referring to a segment as only $S=(E_{k_{1}},E_{k_{2}},U)$, $U \subset E_{k_{2}}$.
+
+\subsubsection{}
+\begin{proposition} [statement 2(a) of Lemma 4.2 of \cite{ACJKLW07}]
+\label{p_embed}
+%Suppose we have two sets $U_x$ and $U_y$
+%of active blocks of the two active classes $E_x$ and $E_y$.
+%Assume after picking up some sticks,
+%$E_z$ suplants $E_x$  as an active class, while $E_y$ remains active,
+%and this is done picking up the minimum number of sticks.
+%Then one optimum solution is to pick up all the blocks of $E_y$
+%embedded into $E_x$, followed by picking up the resulting
+%maximal sticks of $E_x$.
+Suppose we have two sets $U_x$ and $U_y$
+of active blocks of the two active classes $E_x$ and $E_y$.
+Suppose there is an optimal solution that completely picks up $E_x$ before
+completely picking up $E_y$.
+Then there also exists an optimal solution that picks up all embedded
+members of $E_y$ before picking up $E_x$.
+\end{proposition}
+Since Lemma 4.2 of \cite{ACJKLW07} is not proven in their conference version,
+we include a proof for the sake of completeness.
+\begin{proof}
+This follows closely from the definition of embedded members, which can be
+effectively picked up at zero net cost along with the blocks embedding them.
+This is easy to observe in an example: consider the leftmost three columns
+of Fig.~\ref{fig:embedment_example}.
+Here we see a member of $C_0$ (the white column) embedded in two blocks of
+$C_2$.
+We could pick up the embedding blocks using two rules, or we could first
+pick up the embedded block followed by picking up both embedding blocks
+using only one wider rule.
+The overall result is still two rules which pick up all members of the
+embedding class.
+This is, without loss of generallity, either a helpful or irrelevant action.
+So in our solution we will always choose to remove the embedded blocks
+before the embedding blocks.
+\qed
+\end{proof}
+
+
+\subsubsection{Containment Lemma} [Lemma 4.3 of \cite{ACJKLW07}]
+\label{ss_cont}
+Let $S$ and $S'$ be two segments on the same equivalence classes, then either $U \subset U'$ or $U' \subset U$.
+
+Intuitively,
+this follows from the fact that we have a strict ordering on the equivalence classes that could embed columns in $U$. See "Applegate et al."'s paper
+\cite{ACJKLW07} for a rigorous inductive proof of this lemma by the same name.

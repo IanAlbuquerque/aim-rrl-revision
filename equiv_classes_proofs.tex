@@ -1,0 +1,239 @@
+\subsection{Proofs Regarding Equivalence Classes}
+\label{ss_classes}
+
+This section contains some of the proofs relevant 
+to the equivalence classes ordering and the creation of the 
+hierarchical array of a pattern.
+We point out which of these appear in \cite{ACJKLW07}, and include proofs
+for completeness' sake, since \cite{ACJKLW07} omits these proofs.
+
+\subsubsection{Active Classes}
+
+
+\begin{proposition}[\cite{ACJKLW07}, Observation 6. on page 1070]
+\label{t_active_classes}
+During the execution of the MPUS algorithm on a black and white strip-rule pattern, there are always exactly two active classes at any given time.
+The two active classes are either a row and a column
+class of the same color or both classes of the same kind (rows or columns),
+ being one of each color. 
+\end{proposition}
+%-------------------------------
+Since Observation 6 of \cite{ACJKLW07} is not proven in their conference
+version, we include a proof for the sake of completeness.
+
+\begin{proof}
+First, we argue that at least two classes are active. 
+We use the knowledge that the Pick-Up-Sticks (PUS) algorithm will always
+terminate on a gray board if an RRL solution exists.
+Suppose at any time during PUS, there is only one class active.
+Without loss of generality, assume this active class is a set of black rows.
+We will consider the impact of picking up a black row on other potential
+classes becoming active.
+Picking up a black row has no impact on whether a white row becomes active.
+It has no impact on a black column becoming available -- this class needs
+white rows to be removed.
+Finally, only once all of the black rows have been removed can a white
+column class become active.
+This means that picking up some or all of the active class can only result
+in there either being zero active classes or still only one being active.
+Contrast this with the final state of the PUS algorithm, a solid board which
+translates to two active classes (a row and column of that color).
+Therefore, a board with only one active class can never get to the state
+with two active classes required to terminate PUS and be solvable by RRL.
+
+Next, we argue that the 
+two active classes are either a row and a column
+class of the same color or both classes of the same kind (rows or columns),
+ being one of each color. 
+Indeed, let us first look at the case when the two  active classes are
+both column classes (with a symmetric case with two row classes),
+and let there be two columns $D_1$ and $D_2$ one each from these two
+active classes, such that $D_1$ and $D_2$ have not been picked up.
+There is a row where $D_1$ has a black cell and $D_2$
+has a white cell; these cells cannot be gray
+since neither $D_1$ nor $D_2$ have been picked up, and the row
+has never been pseudo-monochromatic. This means $D_1$ can only
+be pseudo-monochromatic as a black-gray column, and $D_2$ can only
+be pseudo-monochromatic as a white-gray column.
+Second, let us look at the case where the two  active classes are
+one a row class and a column class, and let $D_1$ be a row from
+the first active class and let $D_2$ be a column from
+the second active class, such that $D_1$ and $D_2$ have not been picked up.
+Then the cell at the intersection of $D_1$ and $D_2$
+is not gray, and so both $D_1$ and $D_2$ are pseudo-monochromatic
+with the color of this cell.
+
+Note that the fact proved in the previous paragraph
+implies that there cannot be three or more active classes:
+there are not enough colors for three active column classes,
+while two active columns classes and an active two class will
+lead to a contradiction since both columns classes
+are of the same color as the row class, while being at the same time of
+different colors. Thus exactly two classes are active at any given time.
+\qed
+\end{proof}
+
+%-------------------------------
+
+\begin{proposition} [Implicit in \cite{ACJKLW07}]
+\label{theorem_pick_up_altertation}
+For a pattern $P$ of two colors, if one picks up all columns
+of an active class, a row class of the opposite color becomes active. 
+If one picks up all rows
+of an active class, a column class of the opposite color becomes active. 
+\end{proposition}
+
+%-------------------------------
+
+\begin{proof}
+Since $P$ is a pattern composed of only two colors, we have that there are always two active classes at a time. Picking up a (monochromatic) column active class will not change the monochromatic property of any other column class. Hence, the class that will become monochromatic needs to be a row class. The same thing holds with the roles of rows and columns switched.
+
+Also, the new active class must be of the opposite color because if it was not, the class becoming active would need to be already active before, since the color being removed is the same as the other cells of that class, which means that it would need to be monochromatic already.
+\qed
+\end{proof}
+
+%-------------------------------
+
+\subsubsection{Number of Equivalence Classes}
+
+\begin{proposition} [Implicit in \cite{ACJKLW07}]
+\label{theorem_difference_is_class}
+Let $i$ be such that $1 \leq i < N_{C}$ and $j$ be such that $1 \leq j < N_{R}$.
+\begin{enumerate}[a)]
+\item Let $S_i$ be the set of rows that have white cells on the intersections of the columns of $C_{x_{i}}$ and black cells on intersection of the columns of $C_{x_{i+1}}$. $S$ is a row class ($S_i \in R$).
+\item Let $S_j$ be the set of columns that have white cells on the intersections of the rows of $R_{y_{j}}$ and black cells on intersection of the columns of $R_{y_{j+1}}$. $S_j$ is a column class ($S_j \in C$).
+\end{enumerate}
+\end{proposition}
+
+%-------------------------------
+
+\begin{proof}[Proof of item (a)]
+Let $i$ be such that $1 \leq i < N_{C}$ and $S$ be as the set described in 
+the statement of the proposition.
+Let $\alpha$, $\beta$ $\in S$.
+By contradiction, suppose $\alpha$ and $\beta$ differ from each other. Let $\gamma$ be one of the columns that they differ and $k \in \mathbb{N}^{*}$ be such that $C_{x_{k}}$ is the class of $\gamma$.
+Without loss of generality, assume $C_{x_{k}}$ has a black cell on the row $\alpha$ and a white cell on the row $\beta$.
+
+Because of monotonicity, the fact that $C_{x_{k}}$ has a black cell on $\alpha$ and $C_{x_{i}}$ has a white cell on $\alpha$ implies that $x_{k} > x_{i}$ must hold true. At the same time, the fact that $C_{x_{k}}$ has a white cell on $\beta$ and $C_{x_{i+1}}$ has a black cell on $\beta$ implies that $x_{k} < x_{i+1}$ must hold true. Hence, $x_{i} < x_{k} < x_{i+1}$.
+
+However, $x_{i} < x_{k} < x_{i+1}$ implies that $i < k < i+1$, which is a contradiction because $k \in \mathbb{N}^{*}$. $\bot$
+
+Hence, $\alpha$ and $\beta$ do not differ from each other, which implies that $S_{i}$ is a row class ($S_{i} \in R$).
+
+The proof of item $(b)$ follows analogously with the roles of rows and columns switched.
+\qed
+\end{proof}
+
+%-------------------------------
+
+\begin{proposition}
+\label{lemma_num_rows_col_differ_one}
+The number of row classes and the number of column classes differ by one. That is $\lvert N_{R} - N_{C} \rvert \leq 1$.
+\end{proposition}
+
+%-------------------------------
+
+\begin{proof}
+Let $A = max(N_{R},N_{C})$ and $B = min(N_{R},N_{C})$. 
+Note that $\lvert N_{R} - N_{C} \rvert = A - B$. 
+If $N_{R} = N_{C}$, we have that 
+$\lvert N_{R} - N_{C}  \rvert = \lvert 0 \rvert = 0 \leq 1$.
+
+Now, suppose $N_{R} \neq N_{C}$. Assume $A = N_{C}$. It follows that $B = N_{R}$. 
+
+Let $i_{1}$ be such that $1 \leq i_{1} < N_{C}$. Let $S_{i_{1}}$ be the set of rows that have white cells on the intersections of the columns of $C_{x_{i_{1}}}$ and black cells on intersection of the columns of $C_{x_{i_{1}+1}}$. According to~\autoref{theorem_difference_is_class} we have that $S_{i_{1}}$ is a row class.
+
+Let $i_{2}$ be such that $1 \leq i_{2} < N_{C}$ and $i_{2} \neq i_{1}$. Let $S_{i_{2}}$ be the set of rows that have white cells on the intersections of the columns of $C_{x_{i_{2}}}$ and black cells on intersection of the columns of $C_{x_{i_{2}+1}}$. According to~\autoref{theorem_difference_is_class}(a) we have that $S_{i_{2}}$ is a row class.
+
+If $i_{2} < i_{1}$, we have that $x_{i_{2}+1} \leq x_{i_{1}}$, which means that the rows of $S_{i_{2}}$ must have a black cell on its intersections with $C_{x_{i_{1}}}$ due to monotonicity. This implies that $S_{i_{2}} \neq S_{i_{1}}$ because they differ on $C_{x_{i_{1}}}$.
+
+If $i_{2} > i_{1}$, we have that $x_{i_{2}} \geq x_{i_{1}+1}$, which means that the rows of $S_{i_{2}}$ must have a white cell on its intersections with $C_{x_{i_{1}+1}}$ due to monotonicity. This implies that $S_{i_{2}} \neq S_{i_{1}}$ because they differ on $C_{x_{i_{1}+1}}$.
+
+Thus, for every $i$ such that $1 \leq i < N_{C}$ we have a different $S_{i}$ that is a row class. From that, we have that $N_{R} \geq N_{C} - 1 $, being $N_{C} - 1$ the number of different possibilities for $i$. Hence, $N_{C} - N_{R} = A - B \leq 1$.
+
+Now assume $A = N_{R}$. It follows that $B = N_{C}$. Using the same reasoning with~\autoref{theorem_difference_is_class}(b), we have that $N_{R} \geq N_{C} - 1$. Hence, $N_{R} - N_{C} = A - B \leq 1$.
+
+Therefore, it is true for any case that $ \lvert N_{R} - N_{C} \rvert \leq 1$.
+\qed
+\end{proof}
+
+%-------------------------------
+
+
+\subsubsection{Ordering}
+
+\begin{proposition}
+\label{corollary_hierarchical_sequence}
+There is an array $E_{1}$, $E_{2}$, $\cdots$, $E_{N}$ of equivalence classes that respect the following property: given $a$ and $b$ such that $1 \leq a < b \leq N$, if $E_{a}$ and $E_{b}$ are the active classes, then for every $c$ such that $1 \leq c < a$ or $b < c \leq N$, $E_{c}$ has already been picked up. Also, if $b = a + 1$, then either $E_{a} \in R$ and $E_{b} \in C$ or $E_{a} \in C$ and $E_{b} \in R$. 
+Moreover, none of the columns/rows of a class $E_c$ for $a < c < b$ are
+pseudo-monochromatic.  This array is the hierarchical array of a pattern.
+\end{proposition}
+
+%-------------------------------
+
+\begin{proof}
+We know from~\autoref{t_active_classes} that there are always exactly 2 acti
+ve classes during an execution of PUS.
+We combine this idea with the concept of monotonicity in order to create an 
+organization on the possible orders the classes are picked up in.
+For the original pattern, let $A$ and $B$ be the two original active classes
+.
+If $A,B \in C$, we must have that one is white and the other is black.
+Assume without loss of generality that $A$ is white and $B$ is black.
+Then we have that $A = C_{x_{1}} = C_{0}$ and $B = C_{x_{N_{C}}} = C_{n_{R}}
+$.
+To build the array, we will assign $E_{1} = A = C_{x_{1}}$ and $E_{N} = B = 
+C_{x_{N_{C}}}$ since A and B need to be on both ends of the array because bo
+th may be active even if no other classes have been picked.
+If we pick up $C_{x_{1}}$, a row class will need to become active.
+Also, this class will need to be the row class with the largest number of bl
+ack cells due to monotonicity.
+Hence, we should assign $E_{2} = R_{y_{N_{R}}}$.
+Following the same reasoning, the next member will need to be the column cla
+ss with the lowest number of black cells after $C_{x_{1}}$.
+Hence, we should assign $E_{3} = C_{x_{2}}$.
+Analogously, if we pick up $C_{x_{N_{C}}}$, the row class with the least amo
+unt of black cells will become available, this being $R_{y_{1}}$.
+Hence, we should assign $E_{N-1} = R_{y_{1}}$, $E_{N-2} = C_{x_{N_{C}-1}}$ a
+nd so on.
+
+Therefore we can build this array assigning $E_{2i - 1} = C_{x_{i}}$ and $E_
+{2j} = R_{y_{N_{R}-j+1}}$ for every $1 \leq i \leq N_{C}$ and $1 \leq j \leq
+ N_{R}$ with $E_{N} = C_{x_{N_{C}}}$.
+Given $a$ and $b$ such that $1 \leq a < b \leq N$, we have that if $E_{a}$ a
+nd $E_{b}$ are the active classes, every class that comes before $E_{a}$ or 
+after $E_{b}$ must have already been picked up.
+Also, note that two consecutive elements of the array are not of the same ty
+pe of equivalence classes (row/column).
+Note also that that $E_{2N_{C} - 1} = C_{x_{N_{C}}} = E_{N}$, which means th
+at $N = N_{R} + N_{C} = 2N_{C} - 1$ and $N_{R} + 1 =  N_{C}$, which agrees w
+ith~\autoref{lemma_num_rows_col_differ_one}.
+If $A,B \in R$ we may build this array analogously assigning $E_{2j - 1} = R
+_{y_{j}}$ and $E_{2i} = C_{x_{N_{C}-i+1}}$ for every $1 \leq i \leq N_{C}$ a
+nd $1 \leq j \leq N_{R}$ and $E_{N} = R_{y_{N_{R}}}$. For this case, $N_{C} 
++ 1 =  N_{R}$.
+
+For $A$ and $B$ being of different types, let's assume the color of the activ
+e classes, which is the same, is white.
+We can build this array assigning $E_{2i - 1} = C_{x_{i}}$ and $E_{2j} = R_{
+y_{N_{R}-j+1}}$ for every $1 \leq i \leq N_{C}$ and $1 \leq j \leq N_{R}$ wi
+th $E_{N} = R_{y_{1}}$.
+For this case, $E_{2N_{R}} = R_{y_{1}} = E_{N}$ and $N = N_{R} + N_{C} = 2N_
+{R}$ and $N_{R} = N_{C}$, which agrees with~\autoref{lemma_num_rows_col_diff
+er_one}.
+If the color is black, we can build this array assigning $E_{2j - 1} = R_{y_
+{j}}$ and $E_{2i} = C_{x_{N_{C}-i+1}}$ for every $1 \leq i \leq N_{C}$ and $
+1 \leq j \leq N_{R}$ with $E_{N} = C_{x_{N_{C}}}$.
+For this case, $E_{2N_{C}} = C_{x_{N_{C}}} = E_{N}$ and $N = N_{R} + N_{C} =
+ 2N_{C}$ and $N_{R} = N_{C}$.
+By construction it is easy to see that a column/row of a class $E_c$ must no
+t be monochromatic while the two active classes are $E_a$ and $E_b$ for $a <
+ c < b$.
+From our construction and definitions, the only way for a class to become ac
+tive, is to have either the class immediately to its left or right in the hi
+erarchical array already removed.
+This therefore cannot be true while $a < c < b$ since we know the only class
+es removed are those that come before $a$ or come after $b$.
+\qed
+\end{proof}
+%-------------------------------

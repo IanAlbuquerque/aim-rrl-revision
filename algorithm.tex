@@ -1,0 +1,291 @@
+\newcommand{\hs}{\hat{s}}
+\newcommand{\hS}{\hat{S}}
+\newcommand{\hU}{\hat{U}}
+
+\section{Algorithm}
+The flow of our algorithm closely follows that of the $O(n^3)$ algorithm given by "Applegate et al.".
+We similarly create a segment graph of the reachable states in a MPUS of the pattern.
+However, we create this graph faster by grouping similar segments into S-groups, which can be processed together.
+
+\subsection{Setup}
+We begin by reading the input pattern into an equivalence class list and creating the first node in our segment graph.
+
+\subsubsection{Equivalence Class List.}
+ We are given as input an $n_R \times n_C$ grid of black and white cells.
+Assign each of the rows an index from 1 to $n_R$ from top to bottom, similarly each column, an index from 1 to $n_C$ from left to right.
+ Group rows and columns into equivalence classes and order the classes by number of black cells as previously described in the Subsection \ref{ss_equiv}.
+Precisely, construct the hierarchical array:
+$$C_{x_{0}}, R_{y_{N_{R}}}, C_{x_{1}}, R_{y_{(N_{R}-1)}}, \cdots, R_{y_{1}}, C_{x_{(N_{C}-1)}}, R_{y_{0}}, C_{x_{N_{C}}}$$
+(this array may start and/or end with row equivalence classes, instead of columns as above).
+
+We will need to determine from a range of column indexes which columns are
+also in a range of equivalence classes, and the similar question with
+rows instead of columns.
+A data structure such as an orthogonal range tree \cite{KOS2000}
+accomplishes these queries in $O($log $n)$ time with $O(n \log n)$
+space and setup time.
+
+\subsubsection{S-group.}
+ %All of this is definition of segment and doesn't need to be here.
+% We know that an optimal solution exists in the form of an MPUS.
+% Any RRL created by MPUS can be divided into a sequence of segments, each segment containing all the rules applied when a given pair of equivalence classes were active.
+% A segment can be uniquely identified by the 3-tuple label $\{E_1,E_2,U'\}$, where $E_1$ and $E_2$ are the active classes at the time of the segment, and $U$ is the set of members of $E_2$ which have not yet been picked up.
+% (No members of $E_1$ will have been picked up because it has just become available for pick-up.) %Note this language has been heavily lifted from "Applegate et al.".
+ Define an S-group $(E_1, E_2)$
+(for equivalence classes $E_1$ and $E_2$, where the order of $E_1$ and $E_2$
+in the tuple above matters)
+ to be a collection of all segments $\{C_1,C_2,U'\}$
+such that $C_1 = E_1$ and $C_2 = E_2$.
+ To completely represent each of these segments, an S-group $(E_1, E_2)$
+maintains a list of segments $S$ and a master list $U$.
+ This list $U$ will be used to keep track of each of the segment's individual
+ list $u$, as described below.
+ This allows each segment to be stored in constant space, while the S-group gets stored in $O(|E_1|+|E_2|)$ space.
+
+ The list $U$ contains the index of every member of $E_2$ ordered such that for every segment $\{E_1,E_2,U'\}$ in the S-group, the first $|U'|$ members of $U$ comprise the same set as $U'$.
+Such an ordering is guaranteed to exist by the Containment Lemma from
+ Subsection \ref{ss_cont}.
+We generate this ordering by noting that indexes appearing in more segments appear earlier in the list $U$.
+
+$S$, the list of segments maintained by the S-group, keeps these
+segments ordered by the size of their set $U'$.
+Each segment $s_i$ will have three values, $u(s_i)$, $d(s_i)$, and $p(s_i)$.
+$u = |U'|$.
+%We can ignore any segment with $u=0$ by OPTIMAL SEGMENT LEMMA, so we will assume $u>0$.
+$d$ gives the minimum number of sticks required to reach the state of segment starting from the original pattern.
+We want to maintain the shortest path to each node, so we use the value $p$ to store a reference to the segment right before this one on this path. %WOrding. I dont know how to say this better.
+
+%Finally we create an $n \times n$ array to store our S-groups.
+\subsubsection{Origin S-group.}
+We begin with the S-group $(E_1,E_2)$ with $U = \overline{E_2}$ and $S$ comprised of a single segment $(u,d,p) = (|\overline{E_2}|,0,null)$, where  $\overline{E_2}$ represents the complete set of the members of $E_2$.
+The classes $E_1$ and $E_2$ are the first and last members of the
+hierarchical array.
+We will explore outwards from this S-group in a breadth first fashion, enumerating all reachable segments.
+The graph on the S-groups is guaranteed to be acyclic because the number of picked up classes is strictly increasing along each edge.
+
+
+
+
+\subsection{Finding the Next S-group}
+
+
+Suppose we have some S-group $(E_1, E_2)$ with associated lists $U$ and $S$.
+Without loss of generality we will assume $E_1$ to be a column class.
+We wish to generate all S-groups reachable from this S-group.
+The two S-groups immediately reachable from this S-group correspond to completely removing either class $E_1$ or $E_2$.
+
+To determine the cost of removing a class $E_i$ from a segment $s_j$,
+we count how many members of $E_{3-i}$
+can be picked up for free, as described in detail later.
+If two members of $E_i$ may be picked up with the same stick
+while $E_1$ and $E_2$ are the active classes, we will call the
+two members {\em contiguous}. It follows from Proposition
+\ref{corollary_hierarchical_sequence}
+%and the discussion at the end of Subsection \ref{ss_ordering}
+that a pair of columns is contiguous in an S-group $(E_1,E_2)$ if every column
+between them is either already picked up or of type $E_1$ or $E_2$.
+
+Before the class $E_i$ can be removed from a segment  $(E_1,E_2,U')$
+(all the members of the class being picked up),
+we pick up every embedded member of $E_{3-i}$.
+To determine the cost of moving to the next segment,
+we must count how many of the embedded columns are also contiguous.
+Then any embedded columns must be removed from either
+the set $U'$ (if $E_1$ is removed) or $E_1$ (if $U'$ is removed) in the next
+segment and, by doing this for all segments, in the next S-group.
+In fact, we process one S-group at a time, and obtain segments of
+another at most two S-groups, as explained below.
+
+Because $E_1$ and $E_2$ are not symmetric ($E_2$ comes with its set $U$), we will describe the process of removing classes $E_1$ and $E_2$ separately.
+
+%Possibly move some more things here out of the E1 and E2 subsections
+
+\subsubsection{Remove $E_1$.}
+Let $E_3$ be the equivalence class adjacent to $E_1$ in the equivalence class list, which has not yet been removed.
+The S-group corresponding to the result of removing $E_1$ will be $(E_3,E_2)$
+with lists $\hU$ and $\hS$.
+
+\paragraph{Count Contiguous Consecutive Pairs of Columns of $E_1$.}
+To determine the distances to the segments of the next S-group,
+we must count the number of contiguous $E_1$ ranges.
+
+To do so, we must determine the range of equivalence classes which have not yet been picked up.
+Let $E_1$ be the column class $C_a$.
+If $E_2$ is also a column class call it $C_b$.
+If $E_2$ is a row class, then $C_b$ is the column class adjacent to $E_2$ in the equivalence class list that has already been picked up.
+%Note that this assumes padding the list with imaginary classes C_0 and C_m+1
+We assume $a<b$, with the other case being symmetric.
+By Proposition \ref{corollary_hierarchical_sequence},
+ a column class $C_i$ has not been picked up iff $i\in (a,b)$.
+%Notation here. a could be bigger than b, but this seems pretty clear to me.
+
+
+For each pair of adjacent members of $E_1$ we check to see if
+they are contiguous.
+Precisely, for each member $e_i \in E_1$, we query our column range tree for members in the range $[a+1,b-1]$ with index in the range $[e_i,e_{i+1}]$,
+where $e_{i+1}$ is the column of $E_i$ that has the smallest index
+among those with index higher than $e_i$ ($e_{i+1}$ is the next column of $E_i$
+after $e_i$).
+Let $c$ be the number of pairs of consecutive members of $E_1$ which are also contiguous.
+The value $(|E_1| - c)$ corresponds to the number of sticks required to completely remove $E_1$ after any embedded columns of $E_2$ are picked up.
+
+\paragraph{Get Embedded $E_2$ Blocks.}
+If $E_2$ is also a column class, we must count and remove any members of $E_2$ embedded in members of $E_1$.
+Similar to the way we checked that columns of $E_1$ were contiguous, we will check if adjacent columns of $E_1$ are both contiguous and contain columns of $E_2$.
+In order to accurately keep track of the cost to remove these embedded columns we must give each embedded column a tag based on which two columns surrounded the embedded column.
+Two members of $E_2$ can be picked up with the same stick if and only if they have the same tag.
+
+When an embedded column is found, tag it with the index of the $E_1$ column to its left.
+Then add this column to a list, $B$, sorted by the column's index.
+After we have found all of the embedded columns, we are ready to generate $\hU$ and $\hS$.
+
+\paragraph{Build the Next S-group.}
+Begin with $\hU$ as an empty list.
+We also need a set $T$ to keep track of which tags have been accounted for.
+Iterate through $U$, searching for each member $m$ of $U$
+ in the set of embedded columns, $B$.
+If $m\not \in B$, append $m$ to the end of $\hU$.
+Otherwise add $m$'s tag value to the set $T$ if it is not already there. %Stronger way to say this?
+Once we have checked all of the members $U'$  in a segment $s_i$
+($U'$ being the first $u(s_i)$ elements of $U$) ,
+add a new segment $\hs_i$ to $\hS$ with the following values.
+$$u(\hs_i) = |\hU|$$
+$$d(\hs_i)  = d(s_i) + |T| + |E_1| - c$$
+$$p(\hs_i)  = s_i$$
+(note that $|\hU|$ and $|T|$ are computed for the sets  $\hU$ and $T$ exactly
+when finish processing the last element of $U'$ while iterating through $U$;
+$\hU$ and $T$ can change later on).
+If $\hS$ already contains a segment $\hs_j$ with $u(\hs_j) = u(\hs_i)$,
+then keep only the segment with shorter distance $d$ in the set $\hS$,
+ and remove the other one. %wording?
+As an aside, one can see that if we don't remove duplicates,
+if two segments from the same S-group $s_i$ and $s_j$ have
+$u(s_i) > u(s_j)$,  then
+$u(\hs_i) > u(\hs_j)$,  which is used in the proof of the
+Containment Lemma (Subsection \ref{ss_cont} in the Appendix).
+
+\subsubsection{Remove $E_2$.}
+Let $E_3$ be the equivalence class adjacent to $E_2$ in the equivalence class list, which has not yet been removed.
+The S-group corresponding to the result of removing $E_2$ will be $(E_3,E_1)$ with lists $\hU$ (whose elements are members of the class $E_1$) and $\hS$.
+
+
+\paragraph{Count Contiguous Consecutive Pairs of Columns of $E_2$.}
+To count contiguous ranges of $E_2$, we must count the contiguous ranges within each segment separately.  We use a counter $c$, initially set to $0$.
+Fortunately, if a pair of columns is contiguous in one segment, it is also contiguous in all larger (with bigger value of $u$) segments.
+For each index $u_j \in U$ (elements of $E$ are indices of columns),
+ insert $u_j$ into a sorted list of indexes, $I$.
+Get the predecessor and successor of $u_j$ in $I$ and check if these ranges from $u_j$ to its neighbors are contiguous.
+If either of these ranges exist and are contiguous
+ then this column can be picked up for free.
+If not, we increment our cost counter $c$.
+Once we have iterated over the first $u(s_i)$ blocks, we save the state of our counter in a value $c_i = c$.
+This value corresponds to the cost to completely pick up the columns in the segment $s_i$ after any embedded members of $E_1$ have been picked up.
+Proceed (with $c$ pussibly increasing)  until we finish the list $U$.
+
+
+\paragraph{Get Embedded $E_1$ Blocks.}
+If $E_2$ is also a column class, we must count and remove the embedded columns of $E_1$.
+Each segment could have a unique number of embedded columns, where the larger the segment, the more columns can be embedded and the smaller the resulting segment will be in the next S-group.
+As an aside, this is an argument used in the proof of the Containment Lemma
+from \ref{ss_cont}.
+To generate the ordering of $\hU$ and the values in $\hS$ and
+we must carefully count the embedded columns.
+
+We iterate through the columns of $U$ keeping track of which columns
+ are embedded and will get picked up.
+To help us with this task, we start with a sorted list $V$
+of the indexes of $E_1$, an empty list for $\hU$,
+ and a counter $d$, initialized to $d=0$,
+ to measure the number of required sticks.
+Also start with $B$, a set of columns of $E_1$, initialized as the empty set.
+
+Similar to the way we counted contiguous blocks, for each column $u_i \in U$ we insert $u_i$ into a sorted list of indexes $I$.
+Get the predecessor and successor of $u_i$ in $I$, called $u_j$ and $u_k$
+respectively, if they exist (in which case $j < i$ and $k < i$).
+%To avoid reading embedded columns more than once, we give each $u_i$ a right mark or a left mark if embedded columns to its right or left respectively have been picked up and accounted for.
+%If the successor does not have a right mark, then we check if the range is contiguous.
+%If so, we query for the list of columns embedded between $u_i$ and its successor.
+%Do the same for the predecessor, checking for a left mark.
+Use range search to check if $u_j$ and $u_i$ are contiguous,
+and if $u_i$ and $u_k$ are contiguous; if a pair does not exist,
+treat is as not being contiguous.
+If neither of these two pairs is contiguous, do nothing.
+If exactly one of these pairs is contiguous, use binary search in $V$
+to obtain the set of columns of $E_1$ embedded between the pair,
+add this set to $B$, and increment $d$.
+If both of these pairs are contiguous, use binary search to determine
+if there are elements of $\overline{E_1}$
+(defined earlier as all the columns of class $E_1$)
+ between $u_j$ and $u_i$ and between
+$u_i$ and $u_k$; in which case we increment $d$.
+%If any embedded columns were found increment $d$ and add the set of newly found embedded columns to set $B$ (which was initialized as the empty set).
+After we have iterated through $u(s_i)$ columns of $U$, it is time to add to
+$\hU$ and create a new segment $\hs_i \in \hS$ with the following values.
+$$u(\hs_i) = |V| - |B|$$
+$$d(\hs_i) = d(s_i) + d + c_i$$
+$$p(\hs_i) = s_i$$ %Is it possible to end up with two segments of the same distance again? I dont want to think about it right now. @@
+Remove all of the members of $B$ from $V$,
+ then add all of these members to the beginning of $\hU$.
+Reset $B$ to be the empty set.
+Continue iterating through $U$.
+
+Once we have finished iterating through $U$, add the remaining elements in $V$ to the start of $\hU$.
+
+\paragraph{Build the Next S-group.}
+If $E_2$ is a row class, then $\hU = \overline{E_1}$
+ and $\hS$ contains one segment $\hs$.
+To find $\hs$ we iterate over each segment $s_i \in S$
+looking for the segment $s_i$ with minimum value $d(s_i) + c_i$.
+$\hs$ has the following values:
+$$u(\hs) = |\overline{E_1}|$$
+$$d(\hs) = d(s_i) + c_i$$ %c_i doesnt make any sense here. c needs to be incorporated into the segments. ://///
+$$p(\hs) = s_i$$ %you know, i still dont like the way i'm doing this. but I dont really mind breaking up the text. so i dont know.
+%Maybe we incorporate the c_i thing into the segment similar to the rest.
+
+If $E_2$ is a column class, $\hU$ and $\hS$
+ were created while we found embedded columns.
+%I could rewrite this so get embedded blocks actually returns the sets of embedded classes and then use it to compute next S-group in order to match the structure. This way seems easier if possibly harder or trickier.
+
+
+
+\subsection{Merging Identical S-groups}
+
+Once we have generated a new S-group $(E_1,E_2)$ we add it to a two dimensional table, where the row is determined by $E_1$'s index in the original list of equivalence classes, and the column similarly determined from $E_2$'s index.
+
+If an S-group $(E_1,E_2)$ already exists, we must merge the two S-groups.
+%At most three merges will occur for any given S-group type. Is this necessary here? This is more about the runtime.
+Given two $(E_1, E_2)$ S-groups, $G_1 = \{U_1,S_1\}$ and $G_2 = \{U_2,S_2\}$, we will compute a new S-group, $G_3 = \{U_3,S_3\}$, that encompasses both of these S-groups which will then get stored in our table.
+We iterate through both $G_1$ and $G_2$ concurrently in order to create $G_3$,
+as described below. One starts with $U_3$ and $S_3$ being empty.
+
+
+Merge $S_1$ and $S_2$, maintaining the ordering based on $u$
+Iterate through each $s_i$ in this merged list.
+Let $S_j$ be the list which contains $s_i$.
+Remove elements from the start of $U_j$,
+adding them to the end of $U_3$ until $|U_3| = u(s_i)$.
+(Do not add a value to $U_3$ if it is already in $U_3$.)
+This works because of the Containment Lemma from the
+ Appendix \ref{ss_cont}. Actually, the proof in \cite{ACJKLW07}
+of the Containment Lemma relies on proving the fact that
+ all the values of $u(s)$ with $s \in S_1$ are at most the minimum
+of the values of $u(s)$ with $s \in S_2$, or vice versa.
+Add $s_i$ to $S_3$.
+If $G_1$ and $G_2$ both have segments such that $u(s_a) = u(s_b)$, choose the segment of smaller distance to add to $S_3$.
+
+\subsection{Finding the optimum SRRL}
+
+While we build the graph, we keep track of the segment which is a valid endpoint of the smallest distance.
+We define a valid endpoint to be a segment which is completely gray
+(this is since we solve the modified version of the problem;
+for the original problem, we would have a segment which is completely
+white and gray).
+A segment $(E_1,E_2)$, is an endpoint if $E_1=E_2$.
+(in the original version, we also have the case where
+$E_1$ and $E_2$ are adjacent in the equivalence class list and
+ the cell where $E_1$ and $E_2$ intersect is white in the original pattern).
+Then once the graph is finished, we build a path to the valid endpoint using the values stored in $p$.
+This path will give the optimal order to remove equivalence classes, which can then be translated into the optimal list of rectangle rules.
+
+This algorithms returns the optimum solution, as it follows from all the
+discussion above.
