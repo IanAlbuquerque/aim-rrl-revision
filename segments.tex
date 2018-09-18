@@ -24,13 +24,13 @@ let's create a segment $(E_{0}, E_{N}, E_{N})$ for the starting state of pattern
 segment whenever such a segment becomes active during the MPUS execution
 corresponding to the SRRL.
 
-Since $E_{x}$ is the new class, all of the members of $E_{x}$ are still in the pattern. $E_{y}$, in the other hand, is a class that was already active. It may have some of its members already picked-up. We store that information in $U$ by maintaining the members that have not been picked up yet. Note also that any classes that are between $E_{x}$ and $E_{y}$ in the hierarchical array of $P$ have not become active yet, resulting in the fact that all of
+Since $E_{x}$ is the new class, all of the members of $E_{x}$ are still in the pattern. $E_{y}$, in the other hand, is a class that was already active. It may have some of its members already picked up. We store that information in $U$ by maintaining the members that have not been picked up yet. Note also that any classes that are between $E_{x}$ and $E_{y}$ in the hierarchical array of $P$ have not become active yet, resulting in the fact that all of
 their members are still there. At the same time, members that come before and after the interval delimited by $E_{x}$ and $E_{y}$ have all been picked up. Hence, for each one of those segments that are created whenever a class becomes active it is possible to reconstruct the pattern at that moment of the execution of the MPUS algorithm.
 
 \subsubsection{Segment Branching.}
 
 "Applegate et al."'s paper \cite{ACJKLW07}
-shows that if we are looking for an optimal solution we can narrow down the number of segments significantly by reducing the number of options a segment can branch to two.
+shows that if we are looking for an optimal solution we can narrow down the number of segments significantly by reducing the number of options into which a segment can branch to two.
 
 Suppose a minimum-length SRRL for a strip-rule pattern $P$ includes the segment $S = (E_{x}, E_{y}, U)$ and that to get to the next segment, if it exists, we pick up all members of $E_{x}$
 (possibly picking up some members of $U \subset E_{y}$)
@@ -71,7 +71,7 @@ So we can assume that
  only the members of $U_y$ that are embedded in $E_x$ are picked up
 while $E_x$ is active.
 
- Note also that for every segment we could pick the latest class that became active or the oldest, a total of two options. We can then say that every segment will branch into two other segments. On both cases, we can determine the next segment reached by eliminating every embedded member of the class not being picked-up, followed by eliminating every member of the class being picked-up. The only exception to this, is if when we pick every embedded member of the class not being picked-up we end up picking all of its members, thus already reaching a new segment. In that case, the original segment branches into only one segment, instead of two.
+ Note also that for every segment we can pick the latest class that became active or the oldest, a total of two options. We can then say that every segment will branch into two other segments. On both cases, we can determine the next segment reached by eliminating every embedded member of the class not being picked up, followed by eliminating every member of the class being picked up. The only exception to this, is if when we pick every embedded member of the class not being picked up we end up picking all of its members, thus already reaching a new segment. In that case, the original segment branches into only one segment, instead of two.
 
 Note that there could be a segment that does not have any next segment. In this case, the segment is a segment at the very end of minimum-length SRRL. If we pick up any of either class, we will obtain an all-gray grid and the algorithm will be over. Also, note that for this to happen we must have that $E_{x}$ and $E_{y}$ are next to each other in the hierarchy array, and picking-up one of them will also result in picking-up the other one.
 
@@ -84,7 +84,7 @@ We build a graph using the segments as nodes, as described by the following stru
 \item Start with the segment $(E_{0}, E_{N}, E_{N})$, that represents the grid as it is in very beginning of the MPUS algorithm. This will be the starting node.
 
 \item For every node (segment) in the graph, generate the two segments (possibly one, as described in the previous subsection) that it branches into and add a directed edge from it to the new generated nodes.
- There will be one segment for each of the two options of picking up the newest or the oldest of the two classes in the segment. On both cases, we can determine the next segment reached by eliminating every embedded member of the class not being picked-up, followed by eliminating every member of the class being picked-up.
+ There will be one segment for each of the two options of picking up the newest or the oldest of the two classes in the segment. On both cases, we can determine the next segment reached by eliminating every embedded member of the class not being picked up, followed by eliminating every member of the class being picked up.
 
 \item Define the cost for each edge as the number of rules in the MPUS algorithm used to go from one segment to another.
 

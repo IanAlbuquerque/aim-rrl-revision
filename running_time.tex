@@ -2,8 +2,8 @@
 \label{s_run}
 
 
-In this section we will show the time and space complexity of the previously defined algorithm is $O(nN$ log $n)$ and $O(nN)$ respectively -- where $N$ is the number of equivalence classes and $n$ is the number of rows and columns in the original pattern. 
-The ideas of our proof are partially taken from 
+In this section we will show the time and space complexity of the previously defined algorithm is $O(nN$ log $n)$ and $O(nN)$ respectively -- where $N$ is the number of equivalence classes and $n$ is the number of rows and columns in the original pattern.
+The ideas of our proof are partially taken from
 a more complete version of \cite{ACJKLW07},
  which showed the number of reachable segments to be in $O(n^2)$.
 Indeed, our contribution is a faster way of processing a segment,
@@ -27,22 +27,22 @@ For each S-group, add the first term of its complexity, $O(|E_a|)$, to one two d
     E_1 &  E_2 & \dots & E_N\\
 \end{bmatrix}
 \]
- 
-By noting that the sum of all members of all equivalence classes equals the total number of rows and columns, we get $\sum_{i=0}^N{|E_i|} = n$. 
-The sum of the columns in the first matrix and the sum of the rows in the second matrix both equal $n$. 
+
+By noting that the sum of all members of all equivalence classes equals the total number of rows and columns, we get $\sum_{i=0}^N{|E_i|} = n$.
+The sum of the columns in the first matrix and the sum of the rows in the second matrix both equal $n$.
 The sum of all terms in both matrices is $2nN$, so the complexity of all S-groups is in $O(nN)$.
 
-The space complexity of the algorithm is determined by the sizes of the lists storing the S-groups. 
+The space complexity of the algorithm is determined by the sizes of the lists storing the S-groups.
 Each S-group maintains a list $U$, which holds members of $E_b$,
- and is therefore in $O(|E_b|)$. The list $S$ contains all segments. 
-Each segment is guaranteed to have a unique size $u$, 
-and the values of $u$ are positive values less than $|E_b|$. 
-The complexity of each segment is constant, so we again have $O(|E_b|)$. 
-As we have previously shown, since each segment is in 
-$O(|E_a| + |E_b|)$, the overall complexity is $O(nN)$. 
+ and is therefore in $O(|E_b|)$. The list $S$ contains all segments.
+Each segment is guaranteed to have a unique size $u$,
+and the values of $u$ are positive values less than $|E_b|$.
+The complexity of each segment is constant, so we again have $O(|E_b|)$.
+As we have previously shown, since each segment is in
+$O(|E_a| + |E_b|)$, the overall complexity is $O(nN)$.
 
-Each operation we perform on an S-group $(E_a,E_b)$ happens in either 
-$O(|E_a|$ log $n)$ or $O(|E_b|$ log $n)$, as indeed 
+Each operation we perform on an S-group $(E_a,E_b)$ happens in time either
+$O(|E_a|$ log $n)$ or $O(|E_b|$ log $n)$, as indeed
 every ``check" from the algorithm's description takes time $O(\log n)$,
 after $O(n \log n$ initialization of the range search data structure
 or the ordered list represented by a balanced binary tree.

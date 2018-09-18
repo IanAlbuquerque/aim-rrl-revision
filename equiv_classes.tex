@@ -1,10 +1,10 @@
 \subsection{Equivalence Classes}
 \label{ss_equiv}
 
-We now introduce the concept of equivalence classes, as proposed by "Applegate et al."'s paper. This definition will allow us to give structure on the order of which columns and rows should be picked-up during an execution of MPUS in order to find an optimal SRRL.
+We now introduce the concept of equivalence classes, as proposed by "Applegate et al."'s paper. This definition will allow us to give structure on the order in which columns and rows should be picked up during an execution of MPUS in order to find an optimal SRRL.
 
 \subsubsection{Definition and Properties.}
-Given a pattern P, we define two rows or columns as being of the same equivalence class if and only if they are both of the same type (row or column) and their cells have the exact same colors in P, in the same order; that is, they are identical.
+Given a pattern P, we define two rows or columns as being in the same equivalence class if and only if they are both of the same type (row or column) and their cells have the exact same colors in P, in the same order; that is, they are identical.
 
 We will denote a column equivalence class in a pattern $P$ as being $C_{x}$ where $x$ is the number of black cells in the original pattern. Analogously, we will denote $R_{y}$ as being the row class with $y$ black cells in the original pattern. See Fig.~\ref{fig:equiv_classes_example} for an example of a pattern and its equivalence classes.
 It follows from the monotocity property (Theorem
@@ -21,11 +21,11 @@ for all $y$.
 \label{fig:equiv_classes_example}
 \end{figure}
 
-Note that every row and column belongs to exactly one equivalence class. Also, if two columns belong to a equivalence class in the beginning of the MPUS algorithm, they will remain of the same class until one of them is picked up
+Note that every row and column belongs to exactly one equivalence class. Also, if two columns belong to an equivalence class in the beginning of the MPUS algorithm, they will remain of the same class until one of them is picked up
 by the algorithm. This is since picking up other columns does not
 change these two columns at all, while picking up rows modify these
 two columns in exactly the same way. The same property holds for two
-rows that belong to a equivalence class.
+rows that belong to an equivalence class.
 
  %the very end of its execution. This will be proven later,
  %but the idea is that if any cell of row or column is removed,
@@ -49,7 +49,7 @@ class of the same color or both classes of the same kind (rows or columns),
 \subsubsection{Embedded Rows and Columns.}
 We can start improving the MPUS algorithm by introducing the concept described by "Applegate et al."'s paper as embedded rows and columns. This will allow us to pick up more rows and columns using the same number of rectangles.
 
-First, we will define the concept of a embedded column or row at a given stage of the MPUS algorithm.
+First, we will define the concept of an embedded column or row at a given stage of the MPUS algorithm.
 Given a point during the execution of the MPUS algorithm,
 let $b$ be a column of an active equivalence class $B$.
 Let $a_{1}$ be the first column to the left of $b$ that does not belong to $B$ and has not yet been picked up.
@@ -65,11 +65,11 @@ We say that $b$ is {\em embedded}
 \end{figure}
 
 If during the execution of the MPUS algorithm we have the option to pick up two
-column-blocks that embeds a set of columns of another class,
- we could pick up the two column-blocks that embeds the third one with
+column-blocks that embed a set of columns of another class,
+ we can pick up the two column-blocks that embed the third one with
  two rectangles and then the embedded one, totaling three rectangles.
  However, it is better to pick the embedded block first with one rectangle,
-and then pick the two blocks that were previously embedding with only one
+and then pick the two blocks that were previously embedding it with only one
 rectangle, thus using a total of two rectangles for the same set of columns.
 As an example, in Fig.~\ref{fig:embedment_example}, one cannot benefit
 by picking up the first and the third column, when one can pick up
@@ -85,7 +85,7 @@ Also (same proposition), if we pick up all the members of an active class that w
 We can order the equivalence classes of both rows and columns in a given
  pattern $P$ by the number of black cells on it. In that ordering,
 we can see (Proposition \ref{theorem_difference_is_class} in the Appendix)
-that the all the rows that two consecutive column classes differ
+that all the rows that two consecutive column classes differ
  form exactly an equivalence class. This holds analogously for columns.
 This implies (Proposition \ref{lemma_num_rows_col_differ_one} in the Appendix)
 that the numbers of columns and rows classes differ
@@ -95,7 +95,7 @@ by at most one.  Using that information,
 
 \begin{enumerate}
 
-\item Start with the column class with only white cells. If such class does not exist, start with the row class with only black cells  (the existence of
+\item Start with the column class with only white cells. If this class does not exist, start with the row class with only black cells  (the existence of
 this row class follows immediately from the monotonicity property -
 Theorem \ref{theorem_strip_rule_patterns} in the Appendix).
 

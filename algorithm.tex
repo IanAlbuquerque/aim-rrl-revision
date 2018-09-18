@@ -116,7 +116,7 @@ If $E_2$ is a row class, then $C_b$ is the column class adjacent to $E_2$ in the
 %Note that this assumes padding the list with imaginary classes C_0 and C_m+1
 We assume $a<b$, with the other case being symmetric.
 By Proposition \ref{corollary_hierarchical_sequence},
- a column class $C_i$ has not been picked up iff $i\in (a,b)$.
+ a column class $C_i$ has not been picked up if and only if $i\in (a,b)$.
 %Notation here. a could be bigger than b, but this seems pretty clear to me.
 
 
@@ -180,7 +180,7 @@ If either of these ranges exist and are contiguous
 If not, we increment our cost counter $c$.
 Once we have iterated over the first $u(s_i)$ blocks, we save the state of our counter in a value $c_i = c$.
 This value corresponds to the cost to completely pick up the columns in the segment $s_i$ after any embedded members of $E_1$ have been picked up.
-Proceed (with $c$ pussibly increasing)  until we finish the list $U$.
+Proceed (with $c$ possibly increasing) until we finish the list $U$.
 
 
 \paragraph{Get Embedded $E_1$ Blocks.}
@@ -208,7 +208,7 @@ respectively, if they exist (in which case $j < i$ and $k < i$).
 %Do the same for the predecessor, checking for a left mark.
 Use range search to check if $u_j$ and $u_i$ are contiguous,
 and if $u_i$ and $u_k$ are contiguous; if a pair does not exist,
-treat is as not being contiguous.
+treat it as not being contiguous.
 If neither of these two pairs is contiguous, do nothing.
 If exactly one of these pairs is contiguous, use binary search in $V$
 to obtain the set of columns of $E_1$ embedded between the pair,
@@ -234,7 +234,7 @@ Once we have finished iterating through $U$, add the remaining elements in $V$ t
 \paragraph{Build the Next S-group.}
 If $E_2$ is a row class, then $\hU = \overline{E_1}$
  and $\hS$ contains one segment $\hs$.
-To find $\hs$ we iterate over each segment $s_i \in S$
+To find $\hs$, we iterate over each segment $s_i \in S$
 looking for the segment $s_i$ with minimum value $d(s_i) + c_i$.
 $\hs$ has the following values:
 $$u(\hs) = |\overline{E_1}|$$
@@ -287,5 +287,5 @@ $E_1$ and $E_2$ are adjacent in the equivalence class list and
 Then once the graph is finished, we build a path to the valid endpoint using the values stored in $p$.
 This path will give the optimal order to remove equivalence classes, which can then be translated into the optimal list of rectangle rules.
 
-This algorithms returns the optimum solution, as it follows from all the
+This algorithms returns the optimum solution, as follows from all the
 discussion above.

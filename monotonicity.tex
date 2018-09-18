@@ -15,13 +15,13 @@
 \begin{figure}[h]
 \centering
 \includegraphics[height=4cm]{monotonicity_example_good}
-\caption{A pattern that follows the Monotonicity Property}
+\caption{A pattern that follows the Monotonicity Property.}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[height=4cm]{monotonicity_example_bad}
-\caption{A pattern that does not follow the Monotonicity Property}
+\caption{A pattern that does not follow the Monotonicity Property.}
 \end{figure}
 
 \end{theorem}
@@ -66,17 +66,17 @@ Let's continue with the equivalence of $P$ being a strip-rule pattern and the Mo
 
 \item ($P$ is a strip-rule pattern) $\rightarrow$ (Monotonicity Property)
 
-We will prove that $\neg$(Monotonicity Property) $\rightarrow$ $\neg$($P$ is a strip-rule pattern). Suppose the Monotonicity property does not hold true. By contradiction, suppose that $P$ is a strip-rule pattern and let $S$ be a strip-rule RRL of size $n$ that generates $P$ such that $S = (s_{1},s_{2},\cdots,s_{n})$. 
+We will prove that $\neg$(Monotonicity Property) $\rightarrow$ $\neg$($P$ is a strip-rule pattern). Suppose the Monotonicity property does not hold true. By contradiction, suppose that $P$ is a strip-rule pattern and let $S$ be a strip-rule RRL of size $n$ that generates $P$ such that $S = (s_{1},s_{2},\cdots,s_{n})$.
 
 Since the Monotonicity property does not hold true, the same argument as before for the checkerboard case can be made. Let $s_{i}$ be the last rule of $S$ that includes one of the rows or columns of the checkerboard case. Since $s_{i}$ is the last rule that they appear, no other rule after $s_{i}$ could have changed the intersection of the rows ${A,B}$ and columns ${X,Y}$ of the checkerboard case. Then, because of $s_{i}$, either A, B, X or Y must have same color cells in the checkerboard. However, if that happens, the checkerboard case does not hold anymore - a contradiction. Hence, $P$ is not a strip-rule pattern and ($P$ is a strip-rule pattern) $\rightarrow$ (Monotonicity Property) must hold true.
 
 \item (Monotonicity Property) $\rightarrow$ ($P$ is a strip-rule pattern)
 
 
-Suppose that the Monotonicity property holds. By contradiction, suppose that $P$ is not a strip-rule pattern. 
-By \ref{theorem_pick_up_sticks}, the MPUS algorithm will not stop with a all-gray grid. Then it must have been stuck at a grid with no pseudo-monochromatic row or column. 
+Suppose that the Monotonicity property holds. By contradiction, suppose that $P$ is not a strip-rule pattern.
+By \ref{theorem_pick_up_sticks}, the MPUS algorithm will not stop with a all-gray grid. Then it must have been stuck at a grid with no pseudo-monochromatic row or column.
 
-Let A be the row with the largest number of cells colored black. Since this row is not monochromatic, there must be a column Y which intersection with A is a white cell. Y must also not be pseudo-monochromatic. So there must a row B that intersects Y with a black cell. Since B has a black cell in a column that A does not have, than it must be true that the black columns of A are a subset of the black columns of B because of the Monotonicity property. Note also that those sets must not be equal. 
+Let A be the row with the largest number of cells colored black. Since this row is not monochromatic, there must be a column Y which intersection with A is a white cell. Y must also not be pseudo-monochromatic. So there must a row B that intersects Y with a black cell. Since B has a black cell in a column that A does not have, than it must be true that the black columns of A are a subset of the black columns of B because of the Monotonicity property. Note also that those sets must not be equal.
 
 Hence, the number of black cells in B is higher than A, a contradiction. As a conclusion, (Monotonicity Property) $\rightarrow$ ($P$ is a strip-rule pattern) must hold, which concludes our proof.
 \end{itemize}
